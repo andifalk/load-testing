@@ -1,12 +1,15 @@
-from locust import HttpLocust, TaskSet
-
-
-def persons(l):
-    l.client.get("/persons")
+from locust import HttpLocust, TaskSet, task
 
 
 class UserBehavior(TaskSet):
-    tasks = {persons: 2}
+    @task(6)
+    def getPersons(self):
+        self.client.get("/persons")
+
+
+    @task(2)
+    def createPerson(self):
+        self.client.post("/persons", None, {"firstName": "First name", "lastName": "Last name"})
 
 
 class WebsiteUser(HttpLocust):
